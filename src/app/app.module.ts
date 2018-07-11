@@ -13,13 +13,15 @@ import { ClassifierService } from './core/services/classifier.service';
 import { DataService } from './core/services/data.service';
 import { FileDropDirective } from './core/directives/file-drop.directive';
 import { ClassifierResultFormComponent } from './classifier-result-form/classifier-result-form.component';
+import { NavbarComponent } from './shared/navbar/navbar.component';
 @NgModule({
   declarations: [
     AppComponent,
     FileDropZoneComponent,
     FileDropDirective,
     UploadImageFormComponent,
-    ClassifierResultFormComponent
+    ClassifierResultFormComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
