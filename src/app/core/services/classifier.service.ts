@@ -8,7 +8,8 @@ import { catchError, map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ClassifierService {
-  baseUrl: string = 'https://breed-classifier.herokuapp.com/';
+  //baseUrl: string = 'https://breed-classifier.herokuapp.com/';
+  baseUrl: string = 'http://127.0.0.1:5000/';
 
   constructor(private http: HttpClient) { }
 

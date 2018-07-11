@@ -1,13 +1,8 @@
-<div class="container">
-    <div class="align-self-center">
-        <img src="./../../assets/images/perrinis.jpeg" alt="perrinis" class="img-responsive">
-    </div>
-
-    <form [formGroup]="form">
-        <file-drop-zone formControlName="image"></file-drop-zone>
-    </form>
-
-    <div>
-
-    </div>
-</div>
+<form [formGroup]="form">
+    <p [hidden]="!image">
+        <ngb-progressbar type="warning" [value]="uploadPercent" [striped]="true" [animated]="true">
+            <i>{{ uploadPercent + '%' }}</i>
+        </ngb-progressbar>
+    </p>
+    <file-drop-zone formControlName="image"></file-drop-zone>
+</form>

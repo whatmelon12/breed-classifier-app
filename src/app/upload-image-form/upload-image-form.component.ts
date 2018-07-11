@@ -1,6 +1,10 @@
+import { Router } from '@angular/router';
+import { DataService } from './../core/services/data.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
+import { Chart, ChartData } from 'chart.js';
+import * as _ from 'lodash';
 
 import { BreedScore } from './../core/model/breed.model';
 
@@ -13,11 +17,15 @@ import { ClassifierService } from './../core/services/classifier.service';
 })
 export class UploadImageFormComponent implements OnInit {
   form: FormGroup;
+
   showResult: boolean = false;
-  breedScore: BreedScore[];
+  imageUrl: string;
+  uploadPercent = 0;
 
   constructor(private fb: FormBuilder,
-    private service: ClassifierService) { }
+    private router: Router,
+    private classiService: ClassifierService,
+    private dataService: DataService) { }
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -26,21 +34,33 @@ export class UploadImageFormComponent implements OnInit {
 
     this.form.get('image').valueChanges
       .subscribe(file => {
-        let formData: FormData = new FormData();
-        formData.append('image', file, file.name);
+        if (file) {
+          let formData: FormData = new FormData();
+          formData.append('image', file, file.name);
 
-        this.service.testImageFile(formData)
-          .subscribe(event => {
-            if(event.type === HttpEventType.UploadProgress){
-              console.log('Uploaded Progress: ' + (event.loaded / event.total) * 100);
-            }else if(event.type === HttpEventType.Response){
-              this.breedScore = event.body as BreedScore[];
-              console.log(this.breedScore);
-            }
-          });
+          this.classiService.testImageFile(formData)
+            .subscribe(event => {
+              if (event.type === HttpEventType.UploadProgress) {
+                this.uploadPercent = (event.loaded / event.total) * 100;
+              } else if (event.type === HttpEventType.Response) {
+                let breedScore = event.body as BreedScore[];
+                
+                this.dataService.nextImageUrl(file);
+                this.dataService.nextBreedScore(breedScore);
+
+                this.router.navigateByUrl('/imageresult');
+              }
+            });
+        }
       });
   }
 
-  
+  get image() {
+    return this.form.get('image').value as File;
+  }
+
+  set image(value) {
+    this.form.get('image').setValue(value);
+  }
 
 }
