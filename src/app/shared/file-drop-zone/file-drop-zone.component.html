@@ -1,0 +1,11 @@
+<div class="box">
+  <h2>Drop File</h2>
+  <div class="dropzone"
+       fileDrop
+       (filesDropped)="handleDrop($event)"
+       (filesHovered)="dropzoneState($event)"
+       [ngClass]="{'active': dropzoneActive}">
+
+      <span class="fa fa-cloud-upload fa-2x"></span>
+  </div>
+</div>
