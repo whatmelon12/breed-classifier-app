@@ -1,11 +1,11 @@
-<div class="box">
-  <h2>Drop File</h2>
+<div>
+  <h6>Arrastra tu Imagen</h6>
   <div class="dropzone"
        fileDrop
        (filesDropped)="handleDrop($event)"
        (filesHovered)="dropzoneState($event)"
        [ngClass]="{'active': dropzoneActive}">
 
-      <span class="fa fa-cloud-upload fa-2x"></span>
+      <i class="fa fa-cloud-upload fa-2x"></i>
   </div>
 </div>

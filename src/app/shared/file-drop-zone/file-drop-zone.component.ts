@@ -1,17 +1,30 @@
-import { ClassifierService } from './../../core/services/classifier.service';
 import { Component, OnInit } from '@angular/core';
-import { HttpEventType } from '@angular/common/http';
+import { ControlValueAccessor, Validator, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
 
 @Component({
   selector: 'file-drop-zone',
   templateUrl: './file-drop-zone.component.html',
-  styleUrls: ['./file-drop-zone.component.scss']
+  styleUrls: ['./file-drop-zone.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting:FileDropZoneComponent,
+      multi: true
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting:FileDropZoneComponent,
+      multi: true
+    }
+  ]
 })
-export class FileDropZoneComponent {
+export class FileDropZoneComponent implements ControlValueAccessor, Validator {
   selectedImage: File;
   dropzoneActive: boolean = false
 
-  constructor(private service: ClassifierService) { }
+  private onChange: (value: File) => void;
+
+  constructor() { }
 
   dropzoneState($event: boolean) {
     this.dropzoneActive = $event;
@@ -19,17 +32,24 @@ export class FileDropZoneComponent {
 
   handleDrop(fileList: FileList) {
     this.selectedImage = fileList.item(0);
-    let formData: FormData = new FormData();
-    formData.append('image', this.selectedImage, this.selectedImage.name);
+    this.onChange(this.selectedImage);
+  }
 
-    this.service.testImageFile(formData)
-      .subscribe(event => {
-        if(event.type === HttpEventType.UploadProgress){
-          console.log('Uploaded Progress: ' + (event.loaded / event.total) * 100);
-        }else if(event.type === HttpEventType.Response){
-          console.log(event);
-        }
-      });
+  writeValue(value: File): void {
+    this.selectedImage = value;
+  }
+
+  registerOnChange(onChange: (value: File) => void): void {
+    this.onChange = onChange;
+  }
+
+  registerOnTouched(fn: any): void {  }
+
+  validate() {
+    if(!this.selectedImage){
+      return { required: 'This image is required' };
+    }
+    return null;
   }
 
 }
